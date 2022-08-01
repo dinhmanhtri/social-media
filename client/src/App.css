@@ -47,3 +47,8 @@
   background: transparent;
   border: 2px solid var(--orange);
 }
+
+/* Xoa thanh cuon */
+::-webkit-scrollbar {
+  display: none;
+}
