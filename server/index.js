@@ -1,9 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import authRoute from "./routes/auth.routes.js";
 
 const app = express();
 
+// Middleware
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use(express.json({ limit: "30mb", extended: true }));
 
@@ -18,3 +20,6 @@ mongoose
     });
   })
   .catch((error) => console.log(error));
+
+// Usage of routes
+app.use("/auth", authRoute);
