@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import authRoute from "./routes/auth.routes.js";
+import userRoute from "./routes/user.routes.js";
 
 const app = express();
 
@@ -23,3 +24,4 @@ mongoose
 
 // Usage of routes
 app.use("/auth", authRoute);
+app.use("/user", userRoute);
