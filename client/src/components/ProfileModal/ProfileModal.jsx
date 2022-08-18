@@ -23,7 +23,7 @@ function ProfileModal({ modalOpened, setModalOpened }) {
           <input
             type="text"
             className="infoInput"
-            name="FirstName"
+            name="firstName"
             placeholder="First Name"
           />
         </div>
@@ -31,7 +31,7 @@ function ProfileModal({ modalOpened, setModalOpened }) {
           <input
             type="text"
             className="infoInput"
-            name="LastName"
+            name="lastName"
             placeholder="Last Name"
           />
         </div>
@@ -53,7 +53,7 @@ function ProfileModal({ modalOpened, setModalOpened }) {
           <input
             type="text"
             className="infoInput"
-            name="Country"
+            name="country"
             placeholder="Country"
           />
         </div>

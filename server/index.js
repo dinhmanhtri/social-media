@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 import authRoute from "./routes/auth.routes.js";
 import userRoute from "./routes/user.routes.js";
 import postRoute from "./routes/post.routes.js";
@@ -10,8 +11,9 @@ const app = express();
 // Middleware
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use(express.json({ limit: "30mb", extended: true }));
-
+app.use(cors());
 dotenv.config();
+
 const PORT = process.env.PORT;
 const MONGO_DB = process.env.MONGO_DB;
 mongoose
