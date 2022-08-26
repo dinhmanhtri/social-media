@@ -12,6 +12,10 @@ import uploadRoute from "./routes/upload.routes.js"
 
 const app = express();
 
+// To server images for public
+app.use(express.static("public"));
+app.use("/images", express.static("images"));
+
 // Middleware
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use(express.json({ limit: "30mb", extended: true }));
