@@ -1,5 +1,6 @@
 import UserModel from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 // Get a user
 export const getUser = async (req, res) => {
@@ -8,20 +9,20 @@ export const getUser = async (req, res) => {
     const user = await UserModel.findById(id);
     if (user) {
       const { password, ...otherDetails } = user._doc;
-      return res.status(200).json(otherDetails);
+      res.status(200).json(otherDetails);
     } else {
-      return res.status(404).json("No such user exists");
+      res.status(404).json("No such user exists");
     }
   } catch (error) {
-    return res.status(500).json(error);
+    res.status(500).json(error);
   }
 };
 
 // Update a user
 export const updateUser = async (req, res) => {
   const id = req.params.id;
-  const { currentUserId, currentUserAdminStatus, password } = req.body;
-  if (id === currentUserId || currentUserAdminStatus) {
+  const { _id, currentUserAdminStatus, password } = req.body;
+  if (id === _id) {
     if (password) {
       const salt = await bcrypt.genSalt(10);
       req.body.password = await bcrypt.hash(password, salt);
@@ -30,9 +31,15 @@ export const updateUser = async (req, res) => {
       const user = await UserModel.findByIdAndUpdate(id, req.body, {
         new: true,
       });
-      return res.status(200).json(user);
+
+      const token = jwt.sign(
+        { username: user.username, id: user._id },
+        process.env.JWT_KEY,
+        { expiresIn: "1h" }
+      );
+      res.status(200).json({ user, token });
     } catch (error) {
-      return res.status(500).json(error);
+      res.status(500).json(error);
     }
   } else {
     return res
@@ -48,9 +55,9 @@ export const deleteUser = async (req, res) => {
   if (currentUserId === id || currentUserAdminStatus) {
     try {
       await UserModel.findByIdAndDelete(id);
-      return res.status(200).json("User deleted successfully");
+      res.status(200).json("User deleted successfully");
     } catch (error) {
-      return res.status(500).json(error);
+      res.status(500).json(error);
     }
   } else {
     return res
@@ -64,7 +71,7 @@ export const followUser = async (req, res) => {
   const id = req.params.id;
   const { currentUserId } = req.body;
   if (currentUserId === id) {
-    return res.status(403).json("Action forbidden");
+    res.status(403).json("Action forbidden");
   } else {
     try {
       const followUser = await UserModel.findById(id);
@@ -72,12 +79,12 @@ export const followUser = async (req, res) => {
       if (!followUser.followers.includes(currentUserId)) {
         await followUser.updateOne({ $push: { followers: currentUserId } });
         await followingUser.updateOne({ $push: { following: id } });
-        return res.status(200).json("User followed!");
+        res.status(200).json("User followed!");
       } else {
-        return res.status(403).json("User is already followed by you");
+        res.status(403).json("User is already followed by you");
       }
     } catch (error) {
-      return res.status(500).json(error);
+      res.status(500).json(error);
     }
   }
 };
@@ -87,7 +94,7 @@ export const unFollowUser = async (req, res) => {
   const id = req.params.id;
   const { currentUserId } = req.body;
   if (currentUserId === id) {
-    return res.status(403).json("Action forbidden");
+    res.status(403).json("Action forbidden");
   } else {
     try {
       const followUser = await UserModel.findById(id);
@@ -95,12 +102,12 @@ export const unFollowUser = async (req, res) => {
       if (followUser.followers.includes(currentUserId)) {
         await followUser.updateOne({ $pull: { followers: currentUserId } });
         await followingUser.updateOne({ $pull: { following: id } });
-        return res.status(200).json("User Unfollowed!");
+        res.status(200).json("User Unfollowed!");
       } else {
-        return res.status(403).json("User is not followed by you");
+        res.status(403).json("User is not followed by you");
       }
     } catch (error) {
-      return res.status(500).json(error);
+      res.status(500).json(error);
     }
   }
 };

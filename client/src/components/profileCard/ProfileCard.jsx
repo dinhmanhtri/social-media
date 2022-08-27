@@ -3,9 +3,9 @@ import "./ProfileCard.css";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-const ProfileCard = ({location}) => {
+const ProfileCard = ({ location }) => {
   const { user } = useSelector((state) => state.authReducer.authData);
-  const posts = useSelector((state) => state.postReducer.posts)
+  const posts = useSelector((state) => state.postReducer.posts);
   const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
 
   return (
@@ -53,7 +53,9 @@ const ProfileCard = ({location}) => {
             <>
               <div className="vl"></div>
               <div className="follow">
-                <span>{posts.filter((post) => post.userId === user._id).length}</span>
+                <span>
+                  {posts.filter((post) => post.userId === user._id).length}
+                </span>
                 <span>Posts</span>
               </div>
             </>
