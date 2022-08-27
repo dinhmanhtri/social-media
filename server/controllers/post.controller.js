@@ -7,9 +7,9 @@ export const createPost = async (req, res) => {
   const newPost = new PostModel(req.body);
   try {
     await newPost.save();
-    return res.status(200).json(newPost);
+    res.status(200).json(newPost);
   } catch (error) {
-    return res.status(500).json(error);
+    res.status(500).json(error);
   }
 };
 
@@ -18,9 +18,9 @@ export const getPost = async (req, res) => {
   const id = req.params.id;
   try {
     const post = await PostModel.findById(id);
-    return res.status(200).json(post);
+    res.status(200).json(post);
   } catch (error) {
-    return res.status(500).json(error);
+    res.status(500).json(error);
   }
 };
 
@@ -32,12 +32,12 @@ export const updatePost = async (req, res) => {
     const post = await PostModel.findById(postId);
     if (userId === post.userId) {
       await post.updateOne({ $set: req.body });
-      return res.status(200).json("Post updated");
+      res.status(200).json("Post updated");
     } else {
-      return res.status(403).json("Action forbidden");
+      res.status(403).json("Action forbidden");
     }
   } catch (error) {
-    return res.status(500).json(error);
+    res.status(500).json(error);
   }
 };
 
@@ -49,12 +49,12 @@ export const deletePost = async (req, res) => {
     const post = await PostModel.findById(postId);
     if (userId === post.userId) {
       await post.deleteOne();
-      return res.status(200).json("Post deleted successfully");
+      res.status(200).json("Post deleted successfully");
     } else {
-      return res.status(403).json("Action forbidden");
+      res.status(403).json("Action forbidden");
     }
   } catch (error) {
-    return res.status(500).json(error);
+    res.status(500).json(error);
   }
 };
 
@@ -66,13 +66,13 @@ export const likePost = async (req, res) => {
     const post = await PostModel.findById(postId);
     if (!post.likes.includes(userId)) {
       await post.updateOne({ $push: { likes: userId } });
-      return res.status(200).json("Post liked");
+      res.status(200).json("Post liked");
     } else {
       await post.updateOne({ $pull: { likes: userId } });
-      return res.status(200).json("Post unliked");
+      res.status(200).json("Post unliked");
     }
   } catch (error) {
-    return res.status(500).json(error);
+    res.status(500).json(error);
   }
 };
 
@@ -110,6 +110,6 @@ export const getTimelinePosts = async (req, res) => {
         return b.createAt - a.createdAt;
       });
   } catch (error) {
-    return res.status(500).json(error);
+    // res.status(500).json(error);
   }
 };

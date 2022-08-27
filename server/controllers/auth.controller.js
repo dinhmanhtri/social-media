@@ -28,9 +28,9 @@ export const registerUser = async (req, res) => {
       process.env.JWT_KEY,
       { expiresIn: "1h" }
     );
-    return res.status(200).json({ user, token });
+    res.status(200).json({ user, token });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -45,7 +45,7 @@ export const loginUser = async (req, res) => {
       const validity = await bcrypt.compare(password, user.password);
 
       if (!validity) {
-        return res.status(400).json("Wrong password");
+        res.status(400).json("Wrong password");
       } else {
         const token = jwt.sign(
           {
@@ -55,12 +55,12 @@ export const loginUser = async (req, res) => {
           process.env.JWT_KEY,
           { expiresIn: "1h" }
         );
-        return res.status(200).json({ user, token });
+        res.status(200).json({ user, token });
       }
     } else {
-      return res.status(404).json("User does not exists");
+      res.status(404).json("User does not exists");
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
