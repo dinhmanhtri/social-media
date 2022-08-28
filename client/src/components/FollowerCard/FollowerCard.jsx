@@ -1,26 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./FollowerCard.css";
-import { Followers } from "../../data/FollowersData";
+import FollowerModal from "../FollowerModal/FollowerModal";
+import { getAllUsers } from "../../api/UserRequest";
+import User from "../User/User";
+import { useSelector } from "react-redux";
+const FollowersCard = ({ location }) => {
+  const [modalOpened, setModalOpened] = useState(false);
+  const [persons, setPersons] = useState([]);
+  const { user } = useSelector((state) => state.authReducer.authData);
 
-const FollowersCard = () => {
+  useEffect(() => {
+    const fetchPersons = async () => {
+      const { data } = await getAllUsers();
+      setPersons(data);
+    };
+    fetchPersons();
+  }, []);
+
   return (
     <div className="FollowersCard">
-      <h3>Who is following you</h3>
+      <h3>People you may know</h3>
 
-      {Followers.map((follower, id) => {
-        return (
-          <div className="follower">
-            <div>
-              <img src={follower.img} alt="follower" className="followerImage" />
-              <div className="name">
-                <span>{follower.name}</span>
-                <span>@{follower.username}</span>
-              </div>
-            </div>
-            <button className="button fc-button">Follow</button>
-          </div>
-        );
+      {persons.map((person, id) => {
+        if (person._id !== user._id) return <User person={person} key={id} />;
       })}
+      {!location ? (
+        <span onClick={() => setModalOpened(true)}>Show more</span>
+      ) : (
+        ""
+      )}
+
+      <FollowerModal
+        modalOpened={modalOpened}
+        setModalOpened={setModalOpened}
+      />
     </div>
   );
 };
